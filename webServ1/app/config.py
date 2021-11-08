@@ -1,3 +1,6 @@
 import os
 
-SQLALCHEMY_DATABASE_URI = 'lyrics.db'
+DEBUG = True
+Threaded = True
+FLASK_ENV = 'development'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///lyrics.db'
