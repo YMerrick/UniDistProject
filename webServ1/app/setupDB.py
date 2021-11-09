@@ -1,10 +1,12 @@
 import sqlite3
+import os
 
 #Checks if songs.db exist and if it does then checks if it contains information
 
 #Connect to the database
 def createCon(dfile='songs.db'):
-    connection = sqlite3.connect(dfile)
+    thisDir = os.path.abspath(os.path.dirname(__file__))
+    connection = sqlite3.connect(thisDir+'\\' + dfile)
     return connection
 
 #Creates tables required
@@ -55,7 +57,23 @@ def checkTables(con):
         else:
             flag = False
     return flag
-    
+
+#Takes a line from a file stips all unnecessary information and returns a tuple
+def stripper(line):
+
+    pass
+
+#Takes a text file and loads the contents into a list of tuples
+def loadFile(fname):
+    songList = list()
+    with open(fname, 'r',encoding = 'utf-8') as f:
+        for line in f:
+            songList.append(stripper(line))
+    return songList
+
+#adds list of songs to the db
+def addSongs():
+    pass
 
 if __name__ == '__main__':
     try:

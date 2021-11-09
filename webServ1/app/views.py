@@ -14,8 +14,6 @@ def testRun():
 if __name__ == '__main__':
     testRun()    
 
-print(__name__)
-
 message = [{'message': ' Hello World '}]
 
 '''@app.route("/")
@@ -39,28 +37,20 @@ def checkDate():
 #Gets the song of the day and if there is no song then generates one for that day
 class GetSongOfTheDay(Resource):
     def get(self):
-        return 0
+        date = checkDate()
+        song = {
+            "song": db.getSongOfDay(date)
+        }
+        return jsonify(song)
 
 #Gets the song of the day as a youtube link and if there is no song then generates one for that day
 class GetSongOfTheDayYTLink(Resource):
     def get(self):
-        pass
+        date = checkDate()
+        song = {
+            "link": db.getSongOfDay(date,'link')
+        }
+        return jsonify(song)
 
-class HelloWorld(Resource):
-    def get(self):
-        return jsonify(message)
-
-class AddResource(Resource):
-    def put(self,messageIn):
-        messageINN = {'message':messageIn}
-        message.append(messageINN)
-        return jsonify(message)
-    
-    def post(self,messageIn):
-        for mlist in message:
-            mlist['message'] = messageIn
-        return '', 204
-
-checkDate()
-#api.add_resource(HelloWorld,'/')
-#api.add_resource(AddResource,'/<messageIn>')
+api.add_resource(GetSongOfTheDay,'/')
+api.add_resource(GetSongOfTheDayYTLink,'/link')
