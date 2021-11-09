@@ -58,10 +58,56 @@ def checkTables(con):
             flag = False
     return flag
 
+def superStrip(songName):
+    songName = songName.split('(Official',1)[0]
+    songName = songName.split('(official',1)[0]
+    songName = songName.split('(Visualizer',1)[0]
+    songName = songName.split('(Visualiser',1)[0]
+    songName = songName.split('[Official',1)[0]
+    songName = songName.split('[OFFICIAL',1)[0]
+    songName = songName.split('(Lyric')[0]
+    songName = songName.split('(lyric')[0]
+    songName = songName.split('(PNAU',1)[0]
+    songName = songName.split('(Remix',1)[0]
+    songName = songName.split('Remix')[0]
+    songName = songName.split('Acoustic',1)[0]
+    songName = songName.split('ft.',1)[0]
+    songName = songName.split('Ft.',1)[0]
+    songName = songName.split('(feat',1)[0]
+    songName = songName.split('feat.',1)[0]
+    songName = songName.split('Featuring',1)[0]
+    songName = songName.split('(First',1)[0]
+    songName = songName.split('(clip',1)[0]
+    songName = songName.split('(Feat',1)[0]
+    songName = songName.split('(Video',1)[0]
+    songName = songName.split('Official',1)[0]
+    songName = songName.split('(with',1)[0]
+    songName = songName.split('[Music',1)[0]
+    songName = songName.split('(OFFICIAL',1)[0]
+    return songName
+
 #Takes a line from a file stips all unnecessary information and returns a tuple
 def stripper(line):
+    #strips and stores the yt code
+    noYTLine = line.rsplit(' ',1)
+    ytCode = noYTLine[1].strip()
+    noYTLine[0] = noYTLine[0].replace('Anne-Marie','AnneMarie')
+    noYTLine[0] = noYTLine[0].replace('Angel-A','AngelA')
+    noYTLine[0] = noYTLine[0].replace('K-391','K391')
+    noYTLine[0] = noYTLine[0].replace(b'\xe2\x80\x94'.decode('utf-8'),'-')
+    
+    #If the song does not contain a - to serparate song writer and name
+    if noYTLine[0].find('-') == -1:
+        songName = superStrip(noYTLine[0])
+        songName = songName.strip()
+        return (songName,ytCode)
+    #If the song does contain a - to serparate the song writer and name
+    else:
+        noYTLine = noYTLine[0].split('-',1)[1]
+        songName = superStrip(noYTLine)
+        songName = songName.strip()
+        return (songName,ytCode)
 
-    pass
 
 #Takes a text file and loads the contents into a list of tuples
 def loadFile(fname):
@@ -72,8 +118,14 @@ def loadFile(fname):
     return songList
 
 #adds list of songs to the db
-def addSongs():
-    pass
+def addSongs(con):
+    db = con.cursor()
+    fname = 'My YouTube Playlist.txt'
+    songList = loadFile(fname)
+    for item in songList:
+        insertQ = """ INSERT INTO SongTable (songName,ytLink) VALUES (?,?);"""
+        db.execute(insertQ,item)
+    con.commit()
 
 if __name__ == '__main__':
     try:
