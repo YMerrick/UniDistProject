@@ -5,8 +5,9 @@ from flask_restful import Resource, Api
 def testRun():
     global app
     app = Flask(__name__)
-    api = Api(app)
     
+api = Api(app)
+
 if __name__ == '__main__':
     testRun()    
 
@@ -22,3 +23,9 @@ def hello_world():
 def add_message():
     message.append(request.get_json())
     return '',204
+
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello':'world'}
+
+api.add_resource(HelloWorld, '/hello')
