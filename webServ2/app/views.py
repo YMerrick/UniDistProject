@@ -24,8 +24,8 @@ def add_message():
     message.append(request.get_json())
     return '',204
 
-class HelloWorld(Resource):
+class GetArtist(Resource):
     def get(self):
         return {'hello':'world'}
 
-api.add_resource(HelloWorld, '/hello')
+api.add_resource(GetArtist, '/hello')
