@@ -1,3 +1,3 @@
 --*Setup sqlite database--
-*Add lyrics to the database
-*Setup links for getting song of the day
+--*Add songs to the database--
+--*Setup links for getting song of the day--
