@@ -9,7 +9,6 @@ class Client(QFrame):
         self.setWindowTitle('Song of the day')
         self.layout = QVBoxLayout()
         #QDesktopServices.openUrl(url=self.getSongLinkOfTheDay()['link'])
-        self.song = QLabel(self.getSongOfTheDay()['song'])
         self.link = QLabel()
         self.link.setOpenExternalLinks(True)
         response = self.getSongOfTheDay()
@@ -38,6 +37,5 @@ class Client(QFrame):
 if __name__ == '__main__':
     app = QApplication(argv)
     window = Client()
-    window.getSongOfTheDay()
 
     exit(app.exec_())
