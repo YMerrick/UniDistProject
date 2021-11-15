@@ -8,25 +8,26 @@ class Client(QFrame):
         super().__init__()
         self.setWindowTitle('Song of the day')
         self.layout = QVBoxLayout()
-        QDesktopServices.openUrl(url=self.getSongLinkOfTheDay()['link'])
+        #QDesktopServices.openUrl(url=self.getSongLinkOfTheDay()['link'])
         self.song = QLabel(self.getSongOfTheDay()['song'])
         self.link = QLabel()
         self.link.setOpenExternalLinks(True)
-        self.link.setText('<a href={0}>{1}</a>'.format('https://bing.com/search?q=sombody',self.getSongOfTheDay()['song']))
+        self.link.setText('<a href={0}>{1}</a>'.format(self.getSongLinkOfTheDay()['link'],self.getSongOfTheDay()['song']))
         self.layout.addWidget(self.link)
         self.setLayout(self.layout)
         self.show()
 
     def getSongOfTheDay(self):
+        #Put a try catch block here to prevent crashes
         response = requests.get(url='http://127.0.0.1:5000/')
         song = response.json()
         response.close()
         return song
     
     def getSongLinkOfTheDay(self):
+        #Put a try catch block here to prevent crashes
         response = requests.get(url='http://127.0.0.1:5000/link')
         link = response.json()
-        print(link)
         response.close()
         return link
 

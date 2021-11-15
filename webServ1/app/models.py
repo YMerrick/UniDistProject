@@ -108,7 +108,7 @@ class Model():
         ).first()
         if dbQuery == None:
             return None
-        return  'https://www.youtube.com/watch?v='+dbQuery[0]
+        return  'https://youtu.be/'+dbQuery[0]
 
     #Generates a song of the day
     #Checks to see if there is an entry and if not then generates a new one
