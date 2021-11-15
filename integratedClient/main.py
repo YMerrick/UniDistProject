@@ -1,28 +1,48 @@
 from sys import argv, exit
-from PyQt5.QtWidgets import QApplication, QFrame, QVBoxLayout, QLabel
-from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtWidgets import QApplication, QFrame, QVBoxLayout, QLabel, QPushButton
 import requests
+
+class ArtistLife(QFrame):
+    def __init__(self,name):
+        super().__init__()
+        self.setWindowTitle('About the Artist')
+        text = QLabel(self.getArtistInfo(name))
+        layout = QVBoxLayout()
+        layout.addWidget(text)
+        self.setLayout(layout)
+
+    #This is where the information about the artist is retrieved and returned as text
+    def getArtistInfo(self,name):
+        return name
 
 class Client(QFrame):
     def  __init__(self):
         super().__init__()
+        self.rSong = self.getSongOfTheDay()
+        self.rArtist = self.getArtist(self.rSong['song'])
+
         self.setWindowTitle('Song of the day')
-        
+        button = QPushButton('About Artist')
+        button.clicked.connect(self.artistButton)
         self.layout = QVBoxLayout()
         #QDesktopServices.openUrl(url=self.getSongLinkOfTheDay()['link'])
         link = self.createText()
         self.layout.addWidget(link)
+        self.layout.addWidget(button)
         self.setLayout(self.layout)
         self.show()
         self.setMinimumSize(255,50)
 
+    def artistButton(self):
+        self.newW = ArtistLife(self.rArtist)
+        self.newW.show()
+
     def createText(self):
         text = QLabel()
         text.setOpenExternalLinks(True)
-        rSong = self.getSongOfTheDay()
-        rArtist = self.getArtist(rSong['song'])
-        if rSong and rArtist:
-            text.setText('<a href={0}>{1}</a>'.format(rSong['link'],rArtist+'- '+rSong['song']))
+        
+        if self.rSong and self.rArtist:
+            text.setText('<a href={0}>{1}</a>'.format(self.rSong['link'],self.rArtist+'- '+self.rSong['song']))
         else:
             text.setText('An error has occurred')
         return text
