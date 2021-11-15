@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from flask_restful import Resource, Api
+from requests.models import Response
 from app import app
 from .models import Model
 from datetime import datetime
@@ -39,7 +40,8 @@ class GetSongOfTheDay(Resource):
     def get(self):
         date = checkDate()
         song = {
-            "song": db.getSongOfDay(date)
+            "song": db.getSongOfDay(date),
+            "link": db.getSongLinkFromDate(date)
         }
         return jsonify(song)
 
@@ -52,5 +54,14 @@ class GetSongOfTheDayYTLink(Resource):
         }
         return jsonify(song)
 
+class GetSongNameOfTheDay(Resource):
+    def get(self):
+        date = checkDate()
+        song = {
+            'song': db.getSongFromDate(date)
+        }
+        return jsonify(song)
+
 api.add_resource(GetSongOfTheDay,'/')
 api.add_resource(GetSongOfTheDayYTLink,'/link')
+api.add_resource(GetSongNameOfTheDay,'/song')
