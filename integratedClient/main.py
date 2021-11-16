@@ -25,10 +25,11 @@ fLog = logging.FileHandler('client.log')
 fLog.setLevel(logging.INFO)
 fLog.setFormatter(lFormat)
 
-
+sHand = logging.StreamHandler()
+sHand.setLevel(logging.WARNING)
 
 logger.addHandler(fLog)
-logger.addHandler()
+logger.addHandler(sHand)
 
 class Client(QFrame):
     def  __init__(self):
@@ -86,11 +87,10 @@ class Client(QFrame):
             count = 1
             #This generates the playlist by parsing all of the top tracks and then adds those tracks to a playlist
             #After adding to a playlist it then outputs the external link to that playlist
-            sID = self.getArtistSpotifyID(self.artist)
-            songList = self.getTopTracks(sID)
-            for item in songList:
-                displayText += str(count) + '.' + item + '\n'
-                count += 1
+            songList = self.getPlaylist(self.artist)
+            for count,item in enumerate(songList):
+                logger.debug(item)
+                displayText += '{0}.{1}\n'.format(str(count+1),item[0])
             self.playlistLabel.setText(displayText)
 
     def songButton(self):
@@ -115,10 +115,13 @@ class Client(QFrame):
             return 'An error has occurred'
 
     def getSongOfTheDay(self):
+        sCounter = perf_counter()
         #Put a try catch block here to prevent crashes
         response = requests.get(url='http://127.0.0.1:5002/',timeout=2.5)
+        stCounter = perf_counter()
         if response.status_code != 404:
             song = response.json()
+            logger.info(f'song latency time {stCounter-sCounter}')
         else:
             return None
         response.close()
@@ -136,36 +139,42 @@ class Client(QFrame):
 
     def getArtist(self,songName):
         song = songName.replace(' ','_')
+        startCounter = perf_counter()
         response = requests.get(url='http://127.0.0.1:5000/song/'+song,timeout=2.5)
+        stopCounter = perf_counter()
         if response.status_code == 404:
             return None
         elif response.status_code == 500:
             return None
         else:
             artist = response.text
+            logger.info(f'artist latency time {stopCounter-startCounter}')
         response.close()
         artist = artist.strip()
         return artist.replace('"','')
 
     def getPlaylist(self, ArtistName):
         #access the spotify API
+        startCounter = perf_counter()
         spotify = spotipy.Spotify(auth_manager = SpotifyClientCredentials("94ff9ccf4d28431fbb3f221971df753b", "4194d7a7264b4fa98444ba39a85314cd"))
 		#search for the artist
-		results = spotify.search(q = "artist:"+ArtistName, type = "artist")
+        results=spotify.search(q="artist:"+ArtistName,type="artist")
         #extract the artist URI
-		items = results['artists']['items']
-		artist = items[0]
+        items = results['artists']['items']
+        artist = items[0]
         #search for the top tracks for this artist
-		top_tracks = spotify.artist_top_tracks(artist['uri'])
+        top_tracks = spotify.artist_top_tracks(artist['uri'])
+        stopCounter = perf_counter()
+        logger.info(f'spotify web api timer {stopCounter-startCounter}')
         #create an empty playlist
         playlist = []
         #iterate through each top track
         for i in top_tracks['tracks']:
-            print(i['name'])
+            logger.debug(i['name'])
 
-		for i in top_tracks['tracks']:
+        for i in top_tracks['tracks']:
             #append the important information for this track to the playlist
-            playlist.append([i['name'],i['album']['name']],i['album']['release_date']])
+            playlist.append([i['name'],i['album']['name'],i['album']['release_date']])
         return playlist
 
 if __name__ == '__main__':
