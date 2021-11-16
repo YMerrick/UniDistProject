@@ -1,6 +1,22 @@
 from sys import argv, exit
 from PyQt5.QtWidgets import QApplication, QFrame, QLabel, QPushButton, QGridLayout, QVBoxLayout, QWidget
 import requests
+import logging
+from time import perf_counter
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+lFormat = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+
+fLog = logging.FileHandler('client.log')
+fLog.setLevel(logging.INFO)
+fLog.setFormatter(lFormat)
+
+
+
+logger.addHandler(fLog)
+logger.addHandler()
 
 class Client(QFrame):
     def  __init__(self):
@@ -120,7 +136,7 @@ class Client(QFrame):
         return artist.replace('"','')
 
     #Takes the id and returns the top tracks
-    def getTopTracks(self,sID):
+    '''def getTopTracks(self,sID):
         def parseName(sResponse):
             songList = list()
             for item in sResponse:
@@ -160,7 +176,7 @@ class Client(QFrame):
                     sID = item['id']
                     break
         return sID
-
+    '''
 
 if __name__ == '__main__':
     app = QApplication(argv)
