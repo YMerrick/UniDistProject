@@ -13,6 +13,20 @@ fLog = logging.FileHandler('client.log')
 fLog.setLevel(logging.INFO)
 fLog.setFormatter(lFormat)
 
+<<<<<<< HEAD
+=======
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
+class ArtistLife(QFrame):
+    def __init__(self,name):
+        super().__init__()
+        self.setWindowTitle('About the Artist')
+        text = QLabel(self.getArtistInfo(name))
+        layout = QVBoxLayout()
+        layout.addWidget(text)
+        self.setLayout(layout)
+>>>>>>> origin/webServ3_dev
 
 
 logger.addHandler(fLog)
@@ -135,6 +149,7 @@ class Client(QFrame):
         artist = artist.strip()
         return artist.replace('"','')
 
+<<<<<<< HEAD
     #Takes the id and returns the top tracks
     '''def getTopTracks(self,sID):
         def parseName(sResponse):
@@ -177,6 +192,28 @@ class Client(QFrame):
                     break
         return sID
     '''
+=======
+    def getPlaylist(self, ArtistName):
+        #access the spotify API
+        spotify = spotipy.Spotify(auth_manager = SpotifyClientCredentials("94ff9ccf4d28431fbb3f221971df753b", "4194d7a7264b4fa98444ba39a85314cd"))
+		#search for the artist
+		results = spotify.search(q = "artist:"+ArtistName, type = "artist")
+        #extract the artist URI
+		items = results['artists']['items']
+		artist = items[0]
+        #search for the top tracks for this artist
+		top_tracks = spotify.artist_top_tracks(artist['uri'])
+        #create an empty playlist
+        playlist = []
+        #iterate through each top track
+		for i in top_tracks['tracks']:
+            #append the important information for this track to the playlist
+            playlist.append([i['name'],i['album']['name']],i['album']['release_date']])
+        return playlist
+
+for i in top_tracks['tracks']:
+    print(i['name'])
+>>>>>>> origin/webServ3_dev
 
 if __name__ == '__main__':
     app = QApplication(argv)
