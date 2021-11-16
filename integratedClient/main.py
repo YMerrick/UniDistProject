@@ -3,18 +3,6 @@ from PyQt5.QtWidgets import QApplication, QFrame, QLabel, QPushButton, QGridLayo
 import requests
 import logging
 from time import perf_counter
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-lFormat = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s')
-
-fLog = logging.FileHandler('client.log')
-fLog.setLevel(logging.INFO)
-fLog.setFormatter(lFormat)
-
-<<<<<<< HEAD
-=======
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -26,7 +14,17 @@ class ArtistLife(QFrame):
         layout = QVBoxLayout()
         layout.addWidget(text)
         self.setLayout(layout)
->>>>>>> origin/webServ3_dev
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+lFormat = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+
+fLog = logging.FileHandler('client.log')
+fLog.setLevel(logging.INFO)
+fLog.setFormatter(lFormat)
+
 
 
 logger.addHandler(fLog)
@@ -149,50 +147,6 @@ class Client(QFrame):
         artist = artist.strip()
         return artist.replace('"','')
 
-<<<<<<< HEAD
-    #Takes the id and returns the top tracks
-    '''def getTopTracks(self,sID):
-        def parseName(sResponse):
-            songList = list()
-            for item in sResponse:
-                songList.append(item['name'])
-            return songList
-
-        header = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer BQCPL860BX2TjcGKilCKWgcHX_CzQqhWg67E43c377KBrI0N3FBsWOoHsBQ02uRhDLI4-cwb8lkDqCAqWh93Acaf8QArahOy7URNJSY9a-IvdFU3MwfbTWSQuHpYfqHKA-VaIVaiLG4423aR0mRB6QUA7GDP5NL3Q9g'
-        }
-        url = 'https://api.spotify.com/v1/artists/' + sID + '/top-tracks'
-        param = {
-            'market':'GB'
-        }
-        response = requests.get(url=url,params=param,headers=header).json()['tracks']
-        return parseName(response)
-
-    def getArtistSpotifyID(self,name):
-        sID = None
-        header = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer BQCPL860BX2TjcGKilCKWgcHX_CzQqhWg67E43c377KBrI0N3FBsWOoHsBQ02uRhDLI4-cwb8lkDqCAqWh93Acaf8QArahOy7URNJSY9a-IvdFU3MwfbTWSQuHpYfqHKA-VaIVaiLG4423aR0mRB6QUA7GDP5NL3Q9g'
-        }
-        url = 'https://api.spotify.com/v1/search'
-        param = {
-            'q':name,
-            'type':'artist',
-            'market':'GB'
-        }
-        response = requests.get(url=url,params=param,headers=header)
-        if response.status_code == 404:
-            return None
-        else:
-            searchR = response.json()['artists']['items']
-            for item in searchR:
-                if item['name'] == name:
-                    sID = item['id']
-                    break
-        return sID
-    '''
-=======
     def getPlaylist(self, ArtistName):
         #access the spotify API
         spotify = spotipy.Spotify(auth_manager = SpotifyClientCredentials("94ff9ccf4d28431fbb3f221971df753b", "4194d7a7264b4fa98444ba39a85314cd"))
@@ -206,14 +160,13 @@ class Client(QFrame):
         #create an empty playlist
         playlist = []
         #iterate through each top track
+        for i in top_tracks['tracks']:
+            print(i['name'])
+
 		for i in top_tracks['tracks']:
             #append the important information for this track to the playlist
             playlist.append([i['name'],i['album']['name']],i['album']['release_date']])
         return playlist
-
-for i in top_tracks['tracks']:
-    print(i['name'])
->>>>>>> origin/webServ3_dev
 
 if __name__ == '__main__':
     app = QApplication(argv)
