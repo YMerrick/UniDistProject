@@ -2,6 +2,9 @@ from sys import argv, exit
 from PyQt5.QtWidgets import QApplication, QFrame, QVBoxLayout, QLabel, QPushButton
 import requests
 
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
 class ArtistLife(QFrame):
     def __init__(self,name):
         super().__init__()
@@ -79,8 +82,26 @@ class Client(QFrame):
         response.close()
         return artist.replace('"','')
 
-    def get3rdWS(self):
-        pass
+    def getPlaylist(self, ArtistName):
+        #access the spotify API
+        spotify = spotipy.Spotify(auth_manager = SpotifyClientCredentials("94ff9ccf4d28431fbb3f221971df753b", "4194d7a7264b4fa98444ba39a85314cd"))
+		#search for the artist
+		results = spotify.search(q = "artist:"+ArtistName, type = "artist")
+        #extract the artist URI
+		items = results['artists']['items']
+		artist = items[0]
+        #search for the top tracks for this artist
+		top_tracks = spotify.artist_top_tracks(artist['uri'])
+        #create an empty playlist
+        playlist = []
+        #iterate through each top track
+		for i in top_tracks['tracks']:
+            #append the important information for this track to the playlist
+            playlist.append([i['name'],i['album']['name']],i['album']['release_date']])
+        return playlist
+
+for i in top_tracks['tracks']:
+    print(i['name'])
 
 if __name__ == '__main__':
     app = QApplication(argv)
