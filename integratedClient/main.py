@@ -41,14 +41,16 @@ class Client(QFrame):
 
         self.setWindowTitle('Song of the day')
 
-        playlistButton = QPushButton('Get Artist Top Tracks')
-        playlistButton.clicked.connect(self.playlistButton)
+        self.playlist_Button = QPushButton('Get Artist Top Tracks')
+        self.playlist_Button.clicked.connect(self.playlistButton)
+        self.playlist_Button.setEnabled(False)
 
         songButton = QPushButton('Get Song of the Day')
         songButton.clicked.connect(self.songButton)
 
-        artistButton = QPushButton('Get Artist')
-        artistButton.clicked.connect(self.artistButton)
+        self.artist_Button = QPushButton('Get Artist')
+        self.artist_Button.clicked.connect(self.artistButton)
+        self.artist_Button.setEnabled(False)
 
         self.layout = QGridLayout()
         #QDesktopServices.openUrl(url=self.getSongLinkOfTheDay()['link'])
@@ -61,12 +63,12 @@ class Client(QFrame):
 
         #Adds the widgets related to the artist
         self.layout.addWidget(self.artistLabel,2,0)
-        self.layout.addWidget(artistButton,3,0)
+        self.layout.addWidget(self.artist_Button,3,0)
 
         #Adds the widgets related to the playlist
         widget = QVBoxLayout()
         widget.addWidget(self.playlistLabel)
-        widget.addWidget(playlistButton)
+        widget.addWidget(self.playlist_Button)
         widget2 = QWidget()
         widget2.setLayout(widget)
         self.layout.addWidget(widget2,4,0,10,0)
@@ -98,6 +100,7 @@ class Client(QFrame):
             self.songLabel.setOpenExternalLinks(False)
             self.songLabel.setText('')
         else:
+            self.artist_Button.setEnabled(True)
             rSong = self.getSongOfTheDay()
             self.songLabel.setOpenExternalLinks(True)
             self.songLabel.setText(self.createText(rSong['song'],rSong['link']))
@@ -106,6 +109,7 @@ class Client(QFrame):
         if self.artistLabel.text():
             self.artistLabel.setText('')
         else:
+            self.playlist_Button.setEnabled(True)
             self.artistLabel.setText(self.artist)
 
     def createText(self,song,link):
