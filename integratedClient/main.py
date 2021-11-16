@@ -15,7 +15,7 @@ class ArtistLife(QFrame):
         layout.addWidget(text)
         self.setLayout(layout)
 
-
+#setting up the logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -129,7 +129,7 @@ class Client(QFrame):
 
     def getSongLinkOfTheDay(self):
         #Put a try catch block here to prevent crashes
-        response = requests.get(url='http://127.0.0.1:5000/link',timeout=2.5)
+        response = requests.get(url='http://127.0.0.1:5002/link',timeout=2.5)
         if response.status_code == 404:
             return None
         else:
@@ -138,6 +138,7 @@ class Client(QFrame):
         return link
 
     def getArtist(self,songName):
+        #repace whitespace in song name with underscore to match expected input for this service
         song = songName.replace(' ','_')
         startCounter = perf_counter()
         response = requests.get(url='http://127.0.0.1:5000/song/'+song,timeout=2.5)
