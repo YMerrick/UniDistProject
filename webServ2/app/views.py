@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from app import app, models
 from flask_restful import Resource, Api
-#import requests
+
 
 def testRun():
     global app
     app = Flask(__name__)
-    
+
+#inialise the RESTful API    
 api = Api(app)
 
 if __name__ == '__main__':
@@ -15,17 +16,19 @@ if __name__ == '__main__':
 print(__name__)
 
 class GetArtist(Resource):
-    
     def get(self, song):
+        #replace underscores with whitespace
         song = song.replace("_", " ")
+        #query the Song table for this input
         song_record = models.Song.query.filter_by(title=song).all()
+        #error handling if the song cannot be found
+        if not song_record:
+            return "Song not found"
+        #query the database for the artist for this particular song
         artist = models.Artist.query.get(song_record[0].artist_id)
         if not artist:
-            return "Song not found"
-        
-        #This will send the request to the external service, commented out for now while the external client has not been implemented
-        #external_client = requests.post("*url of external service*" + artist.name)
-        #for now, just return result to the user
+            return "Artist not found"        
         return artist.name
 
+#add the GetArtist resource to the RESTful API
 api.add_resource(GetArtist, '/song/<string:song>', methods = ['GET'])
